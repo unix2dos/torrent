@@ -186,7 +186,7 @@ func (t *Torrent) initFiles() {
 	for _, fi := range t.info.UpvertedFiles() {
 		*t.files = append(*t.files, &File{
 			t,
-			strings.Join(append([]string{t.info.Name}, fi.Path...), "/"),
+			strings.Join(append([]string{t.info.Name}, fi.Path...), "/"), //此处是piece完成依据的关键
 			offset,
 			fi.Length,
 			fi,

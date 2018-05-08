@@ -106,6 +106,9 @@ func writeDhtServerStatus(w io.Writer, s *dht.Server) {
 	fmt.Fprintf(w, "\tServer ID: %x\n", s.ID())
 	fmt.Fprintf(w, "\tAnnounces: %d\n", dhtStats.SuccessfulOutboundAnnouncePeerQueries)
 	fmt.Fprintf(w, "\tOutstanding transactions: %d\n", dhtStats.OutstandingTransactions)
+	fmt.Fprintf(w, "\n\n------------------------------------------ADD------------------------------------------\n")
+	s.WriteStatus(w) //liuwei
+	fmt.Fprintf(w, "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n\n\n")
 }
 
 // Writes out a human readable status of the client, such as for writing to a
@@ -241,7 +244,7 @@ func NewClient(cfg *Config) (cl *Client, err error) {
 	if !cfg.NoDHT {
 		for _, s := range cl.conns {
 			if pc, ok := s.(net.PacketConn); ok {
-				ds, err := cl.newDhtServer(pc)
+				ds, err := cl.newDhtServer(pc) //此处只有 udp 才有资格
 				if err != nil {
 					panic(err)
 				}
@@ -1016,7 +1019,7 @@ func (cl *Client) AddTorrentSpec(spec *TorrentSpec) (t *Torrent, new bool, err e
 		t.SetDisplayName(spec.DisplayName)
 	}
 	if spec.InfoBytes != nil {
-		err = t.SetInfoBytes(spec.InfoBytes)
+		err = t.SetInfoBytes(spec.InfoBytes) //此处关键, torrent有了info
 		if err != nil {
 			return
 		}

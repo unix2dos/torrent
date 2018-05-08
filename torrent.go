@@ -403,9 +403,10 @@ func (t *Torrent) setInfoBytes(b []byte) error {
 		return errors.New("info bytes have wrong hash")
 	}
 	var info metainfo.Info
-	if err := bencode.Unmarshal(b, &info); err != nil {
+	if err := bencode.Unmarshal(b, &info); err != nil { //此处最为关键, infoBytes解析成了info
 		return fmt.Errorf("error unmarshalling info bytes: %s", err)
 	}
+
 	if err := t.setInfo(&info); err != nil {
 		return err
 	}
